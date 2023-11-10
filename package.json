@@ -7,7 +7,7 @@
 
 	},
   "scripts": {  "build":"echo Build",
-"start":"npm start"}
+"start":" node index.js"}
 
 
 }
