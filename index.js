@@ -28,8 +28,8 @@ app.use((req, res, next) => {
 });
 
 // ___________________ROUTES ________________________
-// const base = require('./routes.js/home');
-// app.use('/', base);
+const base = require('./routes.js/home');
+app.use('/', base);
 const dogNames = require('./routes.js/dogNames');
 /* `app.use('/api', dogNames);` is setting up a middleware function in the Express server. This
 middleware function is responsible for handling requests that start with the '/api' path. It is

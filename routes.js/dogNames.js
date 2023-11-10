@@ -4,7 +4,6 @@ const data = require('../fakeDB/data');
 const { getArraySize } = require('../utils-gets-functions/getArraySize');
 const express = require('express');
 const router = express.Router();
-
 const {
 	getRandomItemInArray,
 } = require('../utils-gets-functions/getRandomItemInArray');
