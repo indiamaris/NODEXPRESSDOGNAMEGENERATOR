@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 });
 
 // ___________________ROUTES ________________________
-const base = require('./routes.js/home');
+const base = require('./routes.js/root');
 app.use('/', base);
 const dogNames = require('./routes.js/dogNames');
 /* `app.use('/api', dogNames);` is setting up a middleware function in the Express server. This
