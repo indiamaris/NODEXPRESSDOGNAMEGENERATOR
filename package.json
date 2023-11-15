@@ -4,12 +4,10 @@
 		"joi": "^17.11.0",
 		"node": "^21.1.0",
 		"nodemon": "^3.0.1"
-
 	},
-  "scripts": {
-    "build":"echo Build",
-    "start":"node index.js"}
-
-
+	"scripts": {
+		"build": "npm start",
+		"start": "node index.js"
+	}
 }
 

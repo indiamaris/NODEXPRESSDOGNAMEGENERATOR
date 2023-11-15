@@ -28,6 +28,7 @@ app.use((req, res, next) => {
 });
 
 // ___________________ROUTES ________________________
+/* `const base = require('./routes.js/root');` is importing the `root` module from the `routes.js` file. The `root` module is responsible for handling requests to the root path ("/") of the server. The imported module is assigned to the variable `base`, which is later used as middleware in the Express server to handle requests to the root path. */
 const base = require('./routes.js/root');
 app.use('/', base);
 const dogNames = require('./routes.js/dogNames');
