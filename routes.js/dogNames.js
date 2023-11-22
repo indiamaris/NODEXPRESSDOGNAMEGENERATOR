@@ -25,20 +25,12 @@ const dogNameSchema = new moongose.Schema({
 });
 
 const data = () => DogName.find().sort('dogName');
+const dataByName = (dogName) => DogName.find({ dogName: dogName });
 const dataById = (id) => DogName.findById(id);
 const dataNameById = (id) => dataById(id).select({ _id: false, dogName: true });
 
 // isso eh o nome da colecao eu criei caleciones
 const DogName = new moongose.model('dogs-names', dogNameSchema);
-// const createDogName = async ({ Name }) => {
-// 	const name = new DogName({ name: Name });
-// 	try {
-// 		const result = await name.save();
-// 		console.log(result);
-// 	} catch (ex) {
-// 		console.log('the error :' + ex.message);
-// 	}
-// };
 
 // ___________*****_GET__ROUTES_*****___________________//
 router.get('/allNames', async (req, res) => {
@@ -47,8 +39,7 @@ router.get('/allNames', async (req, res) => {
 });
 
 router.get('/randomName', async (req, res) => {
-	const dogNames = await data();
-	const randomDogName = getRandomItemInArray(dogNames);
+	const randomDogName = getRandomItemInArray(await data());
 	res.send(randomDogName);
 });
 
@@ -58,7 +49,8 @@ router.get('/id/:id', async (req, res) => {
 });
 
 router.get('/name/:name', async (req, res) => {
-	const dogName = (await dataNameById(req.params.name)).toObject();
+	const dogName = await dataByName(req.params.name);
+
 	res.send(dogName);
 });
 
@@ -76,7 +68,7 @@ router.post('/allNames', async (req, res) => {
 
 	res.send(dogName);
 });
+// ___________*****_PUT__ROUTES_*****___________________//
 
 module.exports = router;
-
 
