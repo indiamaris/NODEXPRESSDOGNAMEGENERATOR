@@ -13,6 +13,7 @@ const {
 	getItemInArrayById,
 } = require('../utils-gets-functions/getItemInArrayById');
 const moongose = require('mongoose');
+const { after } = require('node:test');
 
 const dogNameSchema = new moongose.Schema({
 	dogName: {
@@ -30,7 +31,7 @@ const dataById = (id) => DogName.findById(id);
 const dataNameById = (id) => dataById(id).select({ _id: false, dogName: true });
 
 // isso eh o nome da colecao eu criei caleciones
-const DogName = new moongose.model('dogs-names', dogNameSchema);
+const DogName = moongose.model('dogs-names', dogNameSchema);
 
 // ___________*****_GET__ROUTES_*****___________________//
 router.get('/allNames', async (req, res) => {
@@ -70,5 +71,29 @@ router.post('/allNames', async (req, res) => {
 });
 // ___________*****_PUT__ROUTES_*****___________________//
 
+router.put('/id/:id', async (req, res) => {
+	let dogName = req.body.name;
+	const dog = await DogName.findByIdAndUpdate(
+		req.params.id,
+		{
+			dogName: dogName,
+		},
+		{ returnDocument: 'after' }
+	);
+	const dogUpdated = dog;
+
+	res.send(dogUpdated);
+});
+
+// ___________*****_DELETE__ROUTES_*****___________________//
+router.delete('/id/:id', async (req, res) => {
+	const dog = await DogName.findByIdAndDelete(req.params.id, {
+		returnDocument: 'after',
+	});
+
+	res.send(
+		` The ${dog.dogName}'s name was deleted from database , but certanly ${dog.dogName} was a good one.${dog.dogName}'s id used to be:${dog.id} `
+	);
+});
 module.exports = router;
 
