@@ -2,6 +2,8 @@
 	"dependencies": {
 		"express": "^4.18.2",
 		"joi": "^17.11.0",
+		"mongoose": "^8.0.1",
+		"moongose": "^1.0.0",
 		"node": "^21.1.0",
 		"nodemon": "^3.0.1"
 	},
@@ -10,4 +12,3 @@
 		"start": "node index.js"
 	}
 }
-

@@ -1,12 +1,15 @@
-/** @format */
+/**
+ * The code `const express = require('express');` is importing the Express module, which is a web
+ * application framework for Node.js. It allows us to create server-side applications and handle HTTP
+ * requests and responses.
+ *
+ * @format
+ */
 
-/* The code `const express = require('express');` is importing the Express module, which is a web
-application framework for Node.js. It allows us to create server-side applications and handle HTTP
-requests and responses. */
 const express = require('express');
 const router = express.Router();
 
-// base route./
+									// base route./
 /*  `Defining a route handler for the GET request to
 the root URL ("/") of the server. */
 router.get('/', (req, res) => {
@@ -31,4 +34,4 @@ When a file is required using `require()`, the exported object is returned. In t
 file that requires this router. */
 module.exports = router;
 
-
+	

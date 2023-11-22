@@ -3,7 +3,6 @@
  *  eslint-disable @typescript-eslint/no-var-requires
  *
  * @format
- */
 
 /* This code is setting up a basic Express server. */
 const express = require('express');
@@ -17,6 +16,22 @@ app.use(express.json());
 /* The next line  is setting the port number for the Express server
 to listen on. */
 const PORT = process.env.PORT || 3000;
+
+/**
+ * The above function connects to a MongoDB database named "DogNames" and logs a message indicating
+ * whether the connection was successful or not.
+ */
+const moongose = require('mongoose');
+async function main() {
+	await moongose
+		.connect('mongodb://localhost/DogsNames ')
+		.then(() => console.log('conectedissimo'));
+}
+
+main().catch((err) => {
+	console.error('not conectedi', err);
+});
+
 /* The next code  is setting up middleware in the Express server.
 Middleware functions are functions that have access to the request (`req`) and response (`res`)
 objects, as well as the next middleware function in the application's request-response cycle. */
