@@ -110,6 +110,7 @@ endpoint, it validates the dog name provided in the request body using the `vali
 function. If there is an error in the validation, it sends a 400 status code with the error message
 as the response. */
 router.post('/allNames', async (req, res) => {
+
 	try {
 		const { error } = validateDogName(req.body);
 		if (error) return res.status(400).send(error.message);
@@ -262,6 +263,8 @@ router.delete('/deleteManyByName/:dogName', async (req, res) => {
 		if (err.reason === '{}') res.send('Internal Error');
 	}
 });
+
+
 
 module.exports = router;
 

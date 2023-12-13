@@ -4,8 +4,10 @@
  *
  * @format
 
+
 /* This code is setting up a basic Express server. */
 const express = require('express');
+
 /* `const app = express();` is creating an instance of the Express application. This instance will be
 used to define the routes and middleware for the server. */
 const app = express();
@@ -51,10 +53,18 @@ const dogNames = require('./routes.js/dogNames');
 middleware function is responsible for handling requests that start with the '/api' path. It is
 using the `dogNames` module to handle these requests. */
 app.use('/api', dogNames);
-
+/* The line `const users = require('./routes.js/users');` is importing the `users` module from the
+`routes.js` file. The `users` module is responsible for handling requests related to user data. The
+imported module is assigned to the variable `users`, which can be used later as middleware in the
+Express server to handle requests related to users. */
+const users = require('./routes.js/users');
+app.use('/api/users', users);
 /* Starting the Express server and making it listen on the specified port number (`PORT`). When the
 server starts listening, it will execute the callback function, which in this case is logging the
 message "Listen to your heart When he's calling for you" to the console. */
+
+const auth = require('./routes.js/auth');
+app.use('/api/auth', auth);
 
 app.listen(PORT, () =>
 	console.log(`Listen to your heart 
