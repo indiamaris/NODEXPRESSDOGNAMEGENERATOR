@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
 
 		const token = jwt.sign(
 			{ _id: userCredentials._id },
-			config.get('dogNames_jwtPrivateKey')
+			config.get('jwtPrivateKey')
 		);
 		res.send(token);
 	} catch (error) {
@@ -73,4 +73,5 @@ const validateUserAuth = (user) => {
 };
 
 module.exports = router;
+
 

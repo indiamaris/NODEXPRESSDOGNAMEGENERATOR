@@ -14,14 +14,13 @@ for different environments (e.g., development, production) and easily switch bet
 `config` module provides a simple way to access the configuration values defined in the
 configuration files. */
 const config = require('config');
-
 /* `config.get('dogNames_PrivateKey');` is retrieving the value of the configuration property named
 'dogNames_PrivateKey' from the configuration files. The `config` module allows you to define
 different configurations for different environments, and `config.get()` is used to access the values
 defined in those configurations. In this case, it is retrieving the value of the
 'dogNames_PrivateKey' property, which could be used for some specific functionality in the
 application. */
-const privateKey = config.get('jwtPrivateKey')
+const privateKey = config.get('jwtPrivateKey');
 if (!privateKey) {
 	console.error('FATAL ERROR');
 	process.exit(1);
@@ -89,6 +88,5 @@ app.listen(PORT, () =>
 	console.log(`Listen to your heart 
 When he's calling for you`)
 );
-
 
 
