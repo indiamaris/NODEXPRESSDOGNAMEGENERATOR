@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+
 router.post('/', async (req, res) => {
 	console.debug(req.body);
 	try {
@@ -30,10 +31,9 @@ router.post('/', async (req, res) => {
 		user.password = await bcrypt.hash(user.password, salt);
 
 		await user.save();
+		const token = user.generateAuthToken();
 
-		res.send(
-			`Congrats! The username '${req.body.userName}' associated to the email '${req.body.email}' was created sucessfully`
-		);
+		res.header('x-auth-token', token).send(user._id);
 	} catch (error) {
 		console.log(error.message);
 		res.status(500).send('Internal Error');

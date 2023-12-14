@@ -3,10 +3,8 @@ const Joi = require('joi');
 const { User } = require('../models/user');
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const config = require('config');
 
 // __________________________________________________
 router.post('/', async (req, res) => {
@@ -33,10 +31,7 @@ router.post('/', async (req, res) => {
 			return res.status(400).send('Invalid email or password bicripit');
 		}
 
-		const token = jwt.sign(
-			{ _id: userCredentials._id },
-			config.get('jwtPrivateKey')
-		);
+		const token = user.generateAuthToken();
 		res.send(token);
 	} catch (error) {
 		console.log(error.message);
@@ -73,5 +68,4 @@ const validateUserAuth = (user) => {
 };
 
 module.exports = router;
-
 
