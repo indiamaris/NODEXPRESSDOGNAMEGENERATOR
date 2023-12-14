@@ -5,29 +5,39 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const config = require('config');
+
+// __________________________________________________
 router.post('/', async (req, res) => {
-	console.debug(req.body);
+	// console.debug(req.body);
 	try {
 		const { error } = validateUserAuth(req.body);
 		if (error) {
 			return res.status(400).send(error.message);
 		}
 
-		let testUserName = await User.findOne({ userName: req.body.userName });
+		let userCredentials = await User.findOne({
+			userName: req.body.userName,
+		});
 
-		if (!testUserName) {
+		if (!userCredentials) {
 			return res.status(400).send('Invalid email or password usarname');
 		}
 
 		const validCredentials = await bcrypt.compare(
 			req.body.password,
-			testUserName.password
+			userCredentials.password
 		);
 		if (!validCredentials) {
 			return res.status(400).send('Invalid email or password bicripit');
 		}
 
-		res.send(`Congrats!You are looged`);
+		const token = jwt.sign(
+			{ _id: userCredentials._id },
+			config.get('dogNames_jwtPrivateKey')
+		);
+		res.send(token);
 	} catch (error) {
 		console.log(error.message);
 		res.status(500).send('Internal Error');
