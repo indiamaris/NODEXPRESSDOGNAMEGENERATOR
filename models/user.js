@@ -27,10 +27,14 @@ const userSchema = new mongoose.Schema({
 		minlenght: [8, `Must be at least 8`],
 		maxlength: [1034, `Must be at maximum 25`],
 	},
+	isAdmin: Boolean,
 });
 
 userSchema.methods.generateAuthToken = function () {
-	return jwt.sign({ _id: this._id }, config.get('jwtPrivateKey'));
+	return jwt.sign(
+		{ _id: this._id, isAdmin: this.isAdmin },
+		config.get('jwtPrivateKey')
+	);
 };
 
 const User = mongoose.model('User', userSchema);

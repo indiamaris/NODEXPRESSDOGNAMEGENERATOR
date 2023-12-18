@@ -19,6 +19,7 @@ const { names, findByName, nameById } = require('../models/names');
 
 const { debug } = require('console');
 const { randomBytes } = require('crypto');
+const isAdmin = require('../middleware/isAdmin');
 //___________*****_GET__ROUTES_*****___________________//
 /* This code defines a GET route for the '/allNames' endpoint. When a GET request is made to this
 endpoint, it retrieves all the dog names from the database using the `names()` function and sends
@@ -26,16 +27,21 @@ the dog names as the response. */
 
 // return all the names in DB
 router.get('/allNames', async (req, res) => {
-	const dogNames = await names();
-	res.send(dogNames);
+	try {
+		const dogNames = await names();
+		res.send(dogNames);
+	} catch (ex) {
+		res.status(500).send(
+			'Provavelmente, pela milésima vez tu nao conectou o DB, hj eh segunda feira ? Tenta ai "brew services start mongodb-community@7.0" ?'
+		);
+	}
 });
-
 
 /* This code defines a GET route for the '/randomName' endpoint. When a GET request is made to this
 endpoint, it retrieves a random dog name from the database using the `getRandomItemInArray` function
 and sends the dog name as the response. */
 
-// return a random name, JUST a name 
+// return a random name, JUST a name
 router.get('/randomName', async (req, res) => {
 	const randomDogName = await getRandomItemInArray(await names());
 	res.send(randomDogName.dogName);
@@ -45,14 +51,12 @@ router.get('/randomName', async (req, res) => {
 endpoint, it retrieves all the dog names from the database using the `names()` function, selects a
 random dog name using the `getRandomItemInArray` function, and sends the random dog name as the
 response. */
-// return complete data for a dog name 
+// return complete data for a dog name
 router.get('/randomDog', async (req, res) => {
 	const dogNames = await names();
 	const randomDogName = await getRandomItemInArray(dogNames);
 	res.send(randomDogName);
 });
-
-
 
 /* This code defines a GET route for the '/id/:id' endpoint. When a GET request is made to this
 endpoint, it retrieves a dog name from the database based on the provided ID. */
@@ -109,8 +113,7 @@ router.get('/name/:dogName', async (req, res) => {
 endpoint, it validates the dog name provided in the request body using the `validateDogName`
 function. If there is an error in the validation, it sends a 400 status code with the error message
 as the response. */
-router.post('/allNames',auth, async (req, res) => {
-
+router.post('/allNames', [auth, isAdmin], async (req, res) => {
 	try {
 		const { error } = validateDogName(req.body);
 		if (error) return res.status(400).send(error.message);
@@ -130,7 +133,7 @@ router.post('/allNames',auth, async (req, res) => {
 made to the '/updateName/:id' endpoint, it first validates the ID format and the dog name provided
 in the request. If there is an error in the validation, it sends a 400 status code with the error
 message as the response. */
-router.patch('/updateName/:id', async (req, res) => {
+router.patch('/updateName/:id', [auth, isAdmin], async (req, res) => {
 	try {
 		const { error } = validateIdFormat(req.params);
 		if (error) {
@@ -159,7 +162,7 @@ router.patch('/updateName/:id', async (req, res) => {
 made to the '/updateId/:dogName' endpoint, it first validates the dog name provided in the request
 parameter using the `validateDogName` function. If there is an error in the validation, it sends a
 400 status code with the error message as the response. */
-router.patch('/updateId/:dogName', async (req, res) => {
+router.patch('/updateId/:dogName', [auth, isAdmin], async (req, res) => {
 	try {
 		const { error } = validateDogName(req.params);
 		if (error) {
@@ -192,7 +195,7 @@ router.patch('/updateId/:dogName', async (req, res) => {
 When a DELETE request is made to the '/id/:id' endpoint, it first validates the ID format using the
 `validateIdFormat` function. If there is an error in the validation, it sends a 400 status code with
 the error message as the response. */
-router.delete('/id/:id', async (req, res) => {
+router.delete('/id/:id', [auth, isAdmin], async (req, res) => {
 	try {
 		const { error } = validateIdFormat(req.params);
 		if (error) {
@@ -238,34 +241,35 @@ names found with the provided name, it sends a response indicating that the name
 the database. If there are dog names found, it uses the `deleteMany` function to delete all the dog
 names with the provided name from the database. It then sends a response indicating the number of
 dog names deleted and a message acknowledging the deletion. */
-router.delete('/deleteManyByName/:dogName', async (req, res) => {
-	const toBeDeleted = req.params.dogName;
+router.delete(
+	'/deleteManyByName/:dogName',
+	[auth, isAdmin],
+	async (req, res) => {
+		const toBeDeleted = req.params.dogName;
 
-	try {
-		const dogName = await findByName(toBeDeleted);
-		if (dogName.length === 0) {
-			return res.send(
-				`The name ${toBeDeleted} do not exist in the namesbase`
-			);
-		}
-		console.debug(dogName);
-
-		const dog = await DogName.deleteMany(
-			{ dogName: toBeDeleted },
-			{
-				returnDocument: 'after',
+		try {
+			const dogName = await findByName(toBeDeleted);
+			if (dogName.length === 0) {
+				return res.send(
+					`The name ${toBeDeleted} do not exist in the namesbase`
+				);
 			}
-		);
-		res.send(
-			` The ${toBeDeleted}'s name was deleted ${dog.deletedCount} times from namesbase , but certanly ${toBeDeleted} was a good one. `
-		);
-	} catch (err) {
-		if (err.reason === '{}') res.send('Internal Error');
+			console.debug(dogName);
+
+			const dog = await DogName.deleteMany(
+				{ dogName: toBeDeleted },
+				{
+					returnDocument: 'after',
+				}
+			);
+			res.send(
+				` The ${toBeDeleted}'s name was deleted ${dog.deletedCount} times from namesbase , but certanly ${toBeDeleted} was a good one. `
+			);
+		} catch (err) {
+			if (err.reason === '{}') res.send('Internal Error');
+		}
 	}
-});
-
-
+);
 
 module.exports = router;
-
 

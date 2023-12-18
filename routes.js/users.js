@@ -1,12 +1,17 @@
 /** @format */
 const { User, validateUser } = require('../models/user');
-
+const auth = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 
+router.get('/me', auth, async (req, res) => {
+	const user = await User.findById(req.body.id).select(-password);
+	console.log(user)
+	res.send(user);
+});
+
 router.post('/', async (req, res) => {
-	// console.debug(req.body);
 	try {
 		const { error } = validateUser(req.body);
 		if (error) {
@@ -34,10 +39,10 @@ router.post('/', async (req, res) => {
 
 		res.header('x-auth-token', token).send(user._id);
 	} catch (error) {
-		console.log(error.message);
 		res.status(500).send('Internal Error');
 	}
 });
 
 module.exports = router;
+
 

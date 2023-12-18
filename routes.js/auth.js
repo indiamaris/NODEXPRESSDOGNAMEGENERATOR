@@ -7,7 +7,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 // __________________________________________________
 router.post('/', async (req, res) => {
-	// console.debug(req.body);
+
 	try {
 		const { error } = validateUserAuth(req.body);
 		if (error) {
@@ -30,7 +30,8 @@ router.post('/', async (req, res) => {
 			return res.status(400).send('Invalid email or password bicripit');
 		}
 
-		const token = User.generateAuthToken;
+		const token = userCredentials.generateAuthToken();
+		console.debug(token)
 		res.send(token);
 	} catch (error) {
 		console.log(error.message);
@@ -67,4 +68,5 @@ const validateUserAuth = (user) => {
 };
 
 module.exports = router;
+
 
