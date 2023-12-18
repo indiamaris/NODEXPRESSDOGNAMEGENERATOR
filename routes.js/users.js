@@ -1,14 +1,13 @@
 /** @format */
 const { User, validateUser } = require('../models/user');
+
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 router.post('/', async (req, res) => {
-	console.debug(req.body);
+	// console.debug(req.body);
 	try {
-		console.debug(req.body);
 		const { error } = validateUser(req.body);
 		if (error) {
 			return res.status(400).send(error.message);
@@ -31,7 +30,7 @@ router.post('/', async (req, res) => {
 		user.password = await bcrypt.hash(user.password, salt);
 
 		await user.save();
-		const token = user.generateAuthToken();
+		const token = User.generateAuthToken;
 
 		res.header('x-auth-token', token).send(user._id);
 	} catch (error) {

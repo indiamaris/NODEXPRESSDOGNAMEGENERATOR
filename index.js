@@ -21,8 +21,9 @@ defined in those configurations. In this case, it is retrieving the value of the
 'dogNames_PrivateKey' property, which could be used for some specific functionality in the
 application. */
 const privateKey = config.get('jwtPrivateKey');
+console.debug(process.env.jwtPrivateKey)
 if (!privateKey) {
-	console.error('FATAL ERROR');
+	console.error('FATAL ERRORI');
 	process.exit(1);
 }
 
