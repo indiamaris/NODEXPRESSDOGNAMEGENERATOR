@@ -86,7 +86,10 @@ message "Listen to your heart When he's calling for you" to the console. */
 // app.use('/api/users/me', me);
 
 const auth = require('./routes.js/auth');
+const error = require('./middleware/error');
 app.use('/api/auth', auth);
+
+app.use(error);
 
 app.listen(PORT, () =>
 	console.log(`Listen to your heart 
