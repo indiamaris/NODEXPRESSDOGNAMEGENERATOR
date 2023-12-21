@@ -38,7 +38,6 @@ router.post('/', async (req, res) => {
 		res.status(500).send('Internal Error');
 	}
 });
-
 const validateUserAuth = (user) => {
 	const schemaUser = Joi.object({
 		userName: Joi.string()

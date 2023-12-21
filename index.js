@@ -3,9 +3,9 @@
  *  eslint-disable @typescript-eslint/no-var-requires
  *
  * @format
-
-
-
+ **/
+const winston = require('winston');
+require('express-async-errors');
 /* This code is setting up a basic Express server. */
 const express = require('express');
 /* The line `const config = require('config');` is importing the `config` module. This module is used
@@ -14,6 +14,12 @@ for different environments (e.g., development, production) and easily switch bet
 `config` module provides a simple way to access the configuration values defined in the
 configuration files. */
 const config = require('config');
+
+
+
+const files = new winston.transports.File({ filename: 'combined.log' });
+
+// winston.add(winston.transports.File, { filename: 'logFile.log' });
 /* `config.get('dogNames_PrivateKey');` is retrieving the value of the configuration property named
 'dogNames_PrivateKey' from the configuration files. The `config` module allows you to define
 different configurations for different environments, and `config.get()` is used to access the values
@@ -21,7 +27,6 @@ defined in those configurations. In this case, it is retrieving the value of the
 'dogNames_PrivateKey' property, which could be used for some specific functionality in the
 application. */
 const privateKey = config.get('jwtPrivateKey');
-console.debug(process.env.jwtPrivateKey);
 if (!privateKey) {
 	console.error('FATAL ERRORI');
 	process.exit(1);
@@ -82,17 +87,16 @@ app.use('/api/users', users);
 server starts listening, it will execute the callback function, which in this case is logging the
 message "Listen to your heart When he's calling for you" to the console. */
 
-// const me = require('./routes.js/users');
-// app.use('/api/users/me', me);
-
 const auth = require('./routes.js/auth');
-const error = require('./middleware/error');
-app.use('/api/auth', auth);
 
+app.use('/api/auth', auth);
+const error = require('./middleware/error');
 app.use(error);
 
 app.listen(PORT, () =>
 	console.log(`Listen to your heart 
 When he's calling for you`)
 );
+
+
 

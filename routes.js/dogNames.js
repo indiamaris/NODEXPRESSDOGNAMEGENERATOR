@@ -1,4 +1,5 @@
 /** @format */
+const winston = require('winston');
 const auth = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
@@ -20,34 +21,44 @@ const { names, findByName, nameById } = require('../models/names');
 const { debug } = require('console');
 const { randomBytes } = require('crypto');
 const isAdmin = require('../middleware/isAdmin');
-const asyncMiddleware = require('../middleware/async')
-	
+const asyncMiddleware = require('../middleware/async');
+
+
+
 //___________*****_GET__ROUTES_*****___________________//
 /* This code defines a GET route for the '/allNames' endpoint. When a GET request is made to this
 endpoint, it retrieves all the dog names from the database using the `names()` function and sends
 the dog names as the response. */
 
 // return all the names in DB
-router.get(
-	'/allNames',
-	asyncMiddleware(async (req, res, next) => {
-		const dogNames = await names();
-		res.send(dogNames);
-	})
-);
+router.get('/allNames', [auth, isAdmin], async (req, res) => {
+	const dogNames = await names();
+	res.send(dogNames);
+});
 
 /* This code defines a GET route for the '/randomName' endpoint. When a GET request is made to this
 endpoint, it retrieves a random dog name from the database using the `getRandomItemInArray` function
 and sends the dog name as the response. */
-
+// create a logger
+// const logger = winston.createLogger({
+// 	level: 'info',
+// 	format: winston.format.json(),
+// 	defaultMeta: { service: 'user-service' },
+// 	transports: [
+// 		//
+// 		// - Write all logs with importance level of `error` or less to `error.log`
+// 		// - Write all logs with importance level of `info` or less to `combined.log`
+// 		//
+// 		new winston.transports.File({ filename: 'error.log', level: 'error' }),
+// 		new winston.transports.File({ filename: 'myLogs.log' }),
+// 	],
+// });
 // return a random name, JUST a name
-router.get(
-	'/randomName',
-	asyncMiddleware(async (req, res) => {
-		const randomDogName = await getRandomItemInArray(await names());
-		res.send(randomDogName.dogName);
-	})
-);
+router.get('/randomName', async (req, res) => {
+	throw new Error()
+	const randomDogName = await getRandomItemInArray(await names());
+	res.send(randomDogName.dogName);
+});
 
 /* This code defines a GET route for the '/randomDog' endpoint. When a GET request is made to this
 endpoint, it retrieves all the dog names from the database using the `names()` function, selects a
@@ -62,51 +73,41 @@ router.get('/randomDog', async (req, res) => {
 
 /* This code defines a GET route for the '/id/:id' endpoint. When a GET request is made to this
 endpoint, it retrieves a dog name from the database based on the provided ID. */
-router.get(
-	'/id/:id',
-	asyncMiddleware(async (req, res) => {
-		const receivedID = req.params.id;
-		const { error } = validateIdFormat(req.params);
-		if (error) return res.status(400).send(error.message);
-		else {
-			if (!validateId(receivedID)) {
-				return res.status(400).send('The id isnt valid');
-			}
-			const dogName = await nameById(receivedID);
-			if (!dogName) {
-				return res
-					.status(404)
-					.send('The id do not exist in our databse');
-			}
-			res.send(dogName);
+router.get('/id/:id', [auth, isAdmin], async (req, res) => {
+	const receivedID = req.params.id;
+	const { error } = validateIdFormat(req.params);
+	if (error) return res.status(400).send(error.message);
+	else {
+		if (!validateId(receivedID)) {
+			return res.status(400).send('The id isnt valid');
 		}
-	})
-);
+		const dogName = await nameById(receivedID);
+		if (!dogName) {
+			return res.status(404).send('The id do not exist in our databse');
+		}
+		res.send(dogName);
+	}
+});
 
 /* This code defines a GET route for the '/name/:dogName' endpoint. When a GET request is made to this
 endpoint, it retrieves a dog name from the database based on the provided dogName parameter. */
-router.get(
-	'/name/:dogName',
-	asyncMiddleware(async (req, res) => {
-		let receivedDogName;
+router.get('/name/:dogName', [auth, isAdmin], async (req, res) => {
+	let receivedDogName;
 
-		const { error } = validateDogName(req.params);
-		if (error) {
-			return res.status(400).send(error.message);
-		}
-		receivedDogName = req.params.dogName;
+	const { error } = validateDogName(req.params);
+	if (error) {
+		return res.status(400).send(error.message);
+	}
+	receivedDogName = req.params.dogName;
 
-		const dogName = await findByName(receivedDogName);
-		if (!dogName || dogName.length === 0) {
-			return res
-				.status(404)
-				.send(
-					`The name ${receivedDogName} do not exist in our databse`
-				);
-		}
-		res.send(dogName);
-	})
-);
+	const dogName = await findByName(receivedDogName);
+	if (!dogName || dogName.length === 0) {
+		return res
+			.status(404)
+			.send(`The name ${receivedDogName} do not exist in our databse`);
+	}
+	res.send(dogName);
+});
 
 // ___________*****_POST__ROUTES_*****___________________//
 
@@ -114,18 +115,14 @@ router.get(
 endpoint, it validates the dog name provided in the request body using the `validateDogName`
 function. If there is an error in the validation, it sends a 400 status code with the error message
 as the response. */
-router.post(
-	'/allNames',
-	[auth, isAdmin],
-	asyncMiddleware(async (req, res) => {
-		const { error } = validateDogName(req.body);
-		if (error) return res.status(400).send(error.message);
-		const dogName = new DogName({ dogName: req.body.dogName });
-		await dogName.save();
-		console.debug(dogName);
-		res.send(dogName);
-	})
-);
+router.post('/allNames', [auth, isAdmin], async (req, res) => {
+	const { error } = validateDogName(req.body);
+	if (error) return res.status(400).send(error.message);
+	const dogName = new DogName({ dogName: req.body.dogName });
+	await dogName.save();
+	console.debug(dogName);
+	res.send(dogName);
+});
 
 // ___________*****_PATCH__ROUTES_*****___________________//
 
@@ -136,7 +133,8 @@ message as the response. */
 router.patch(
 	'/updateName/:id',
 	[auth, isAdmin],
-	asyncMiddleware(async (req, res) => {
+	[auth, isAdmin],
+	async (req, res) => {
 		const { error } = validateIdFormat(req.params);
 		if (error) {
 			return res.status(400).send(error.message);
@@ -154,73 +152,64 @@ router.patch(
 			);
 			res.send(dog);
 		}
-	})
+	}
 );
 
 /* This code defines a PATCH route for updating a dog name in the database. When a PATCH request is
 made to the '/updateId/:dogName' endpoint, it first validates the dog name provided in the request
 parameter using the `validateDogName` function. If there is an error in the validation, it sends a
 400 status code with the error message as the response. */
-router.patch(
-	'/updateId/:dogName',
-	[auth, isAdmin],
-	asyncMiddleware(async (req, res) => {
-		const { error } = validateDogName(req.params);
-		if (error) {
-			return res.status(400).send(error.message);
-		}
-		const receivedDogName = req.params.dogName;
-		const dogNameToBeUpdated = await findByName(receivedDogName);
-		if (dogNameToBeUpdated.length === 0) {
-			return res.send(
-				`The name ${receivedDogName} do not exist in the namesbase`
-			);
-		}
-		const deletedDog = await DogName.findByIdAndDelete(
-			dogNameToBeUpdated[0].id,
+router.patch('/updateId/:dogName', [auth, isAdmin], async (req, res) => {
+	const { error } = validateDogName(req.params);
+	if (error) {
+		return res.status(400).send(error.message);
+	}
+	const receivedDogName = req.params.dogName;
+	const dogNameToBeUpdated = await findByName(receivedDogName);
+	if (dogNameToBeUpdated.length === 0) {
+		return res.send(
+			`The name ${receivedDogName} do not exist in the namesbase`
+		);
+	}
+	const deletedDog = await DogName.findByIdAndDelete(
+		dogNameToBeUpdated[0].id,
 
-			{ returnDocument: 'after' }
-		);
-		const dogUpdated = new DogName({ dogName: req.params.dogName });
-		await dogUpdated.save();
-		console.debug(dogUpdated);
-		res.send(
-			` The new id for ${dogUpdated.dogName} now is 	 ${dogUpdated.id}`
-		);
-	})
-);
+		{ returnDocument: 'after' }
+	);
+	const dogUpdated = new DogName({ dogName: req.params.dogName });
+	await dogUpdated.save();
+	console.debug(dogUpdated);
+	res.send(` The new id for ${dogUpdated.dogName} now is 	 ${dogUpdated.id}`);
+});
+
 // ___________*****_DELETE__ROUTES_*****___________________//
 /* This code defines a DELETE route for deleting a dog name from the database based on the provided ID.
 When a DELETE request is made to the '/id/:id' endpoint, it first validates the ID format using the
 `validateIdFormat` function. If there is an error in the validation, it sends a 400 status code with
 the error message as the response. */
-router.delete(
-	'/id/:id',
-	[auth, isAdmin],
-	asyncMiddleware(async (req, res) => {
-		const { error } = validateIdFormat(req.params);
-		if (error) {
-			return res.status(400).send(error.message);
-		} else {
-			const idExist = await DogName.exists({
-				_id: req.params.id,
-			});
-			if (!idExist)
-				return res
-					.status(400)
-					.send(
-						` Sorry, there is no dog's name with the id ${req.params.id}.`
-					);
-		}
-
-		const dog = await DogName.findByIdAndDelete(req.params.id, {
-			returnDocument: 'after',
+router.delete('/id/:id', [auth, isAdmin], async (req, res) => {
+	const { error } = validateIdFormat(req.params);
+	if (error) {
+		return res.status(400).send(error.message);
+	} else {
+		const idExist = await DogName.exists({
+			_id: req.params.id,
 		});
-		res.send(
-			` The ${dog.dogName}'s name was deleted from namesbase , but certanly ${dog.dogName} was a good one. `
-		);
-	})
-);
+		if (!idExist)
+			return res
+				.status(400)
+				.send(
+					` Sorry, there is no dog's name with the id ${req.params.id}.`
+				);
+	}
+
+	const dog = await DogName.findByIdAndDelete(req.params.id, {
+		returnDocument: 'after',
+	});
+	res.send(
+		` The ${dog.dogName}'s name was deleted from namesbase , but certanly ${dog.dogName} was a good one. `
+	);
+});
 
 /* This code defines a DELETE route for deleting multiple dog names from the database based on the
 provided dog name. When a DELETE request is made to the '/deleteManyByName/:dogName' endpoint, it
@@ -232,7 +221,7 @@ dog names deleted and a message acknowledging the deletion. */
 router.delete(
 	'/deleteManyByName/:dogName',
 	[auth, isAdmin],
-	asyncMiddleware(async (req, res) => {
+	async (req, res) => {
 		const toBeDeleted = req.params.dogName;
 		const dogName = await findByName(toBeDeleted);
 		if (dogName.length === 0) {
@@ -251,8 +240,10 @@ router.delete(
 		res.send(
 			` The ${toBeDeleted}'s name was deleted ${dog.deletedCount} times from namesbase , but certanly ${toBeDeleted} was a good one. `
 		);
-	})
+	}
 );
 
 module.exports = router;
+
+
 
