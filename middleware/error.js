@@ -1,6 +1,7 @@
 /** @format */
 const winston = require('winston');
 module.exports = function (err, req, res, next) {
+	console.log(err.message)
 	winston.error(err.message, err);
 
 	res.status(500).send(

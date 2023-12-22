@@ -1,5 +1,5 @@
 /** @format */
-const winston = require('winston');
+// const winston = require('winston');
 const auth = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
@@ -21,7 +21,7 @@ const { names, findByName, nameById } = require('../models/names');
 const { debug } = require('console');
 const { randomBytes } = require('crypto');
 const isAdmin = require('../middleware/isAdmin');
-const asyncMiddleware = require('../middleware/async');
+// const asyncMiddleware = require('../middleware/async');
 
 //___________*****_GET__ROUTES_*****___________________//
 /* This code defines a GET route for the '/allNames' endpoint. When a GET request is made to this
