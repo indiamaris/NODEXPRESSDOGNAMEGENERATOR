@@ -7,7 +7,6 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 // __________________________________________________
 router.post('/', async (req, res) => {
-
 	try {
 		const { error } = validateUserAuth(req.body);
 		if (error) {
@@ -31,7 +30,7 @@ router.post('/', async (req, res) => {
 		}
 
 		const token = userCredentials.generateAuthToken();
-		console.debug(token)
+
 		res.send(token);
 	} catch (error) {
 		console.log(error.message);
@@ -67,5 +66,4 @@ const validateUserAuth = (user) => {
 };
 
 module.exports = router;
-
 

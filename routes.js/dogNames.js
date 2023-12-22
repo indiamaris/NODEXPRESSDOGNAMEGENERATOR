@@ -23,8 +23,6 @@ const { randomBytes } = require('crypto');
 const isAdmin = require('../middleware/isAdmin');
 const asyncMiddleware = require('../middleware/async');
 
-
-
 //___________*****_GET__ROUTES_*****___________________//
 /* This code defines a GET route for the '/allNames' endpoint. When a GET request is made to this
 endpoint, it retrieves all the dog names from the database using the `names()` function and sends
@@ -32,6 +30,7 @@ the dog names as the response. */
 
 // return all the names in DB
 router.get('/allNames', [auth, isAdmin], async (req, res) => {
+	throw new Error('here is the mesage, darling');
 	const dogNames = await names();
 	res.send(dogNames);
 });
@@ -55,7 +54,7 @@ and sends the dog name as the response. */
 // });
 // return a random name, JUST a name
 router.get('/randomName', async (req, res) => {
-	throw new Error()
+	throw new Error();
 	const randomDogName = await getRandomItemInArray(await names());
 	res.send(randomDogName.dogName);
 });
@@ -244,6 +243,4 @@ router.delete(
 );
 
 module.exports = router;
-
-
 

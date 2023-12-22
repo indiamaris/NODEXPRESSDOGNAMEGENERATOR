@@ -4,6 +4,7 @@
  *
  * @format
  **/
+require('winston-mongodb');
 const winston = require('winston');
 require('express-async-errors');
 /* This code is setting up a basic Express server. */
@@ -14,12 +15,15 @@ for different environments (e.g., development, production) and easily switch bet
 `config` module provides a simple way to access the configuration values defined in the
 configuration files. */
 const config = require('config');
-
-
-
-const files = new winston.transports.File({ filename: 'combined.log' });
-
-// winston.add(winston.transports.File, { filename: 'logFile.log' });
+process.on('uncaughtException', (ex) => {
+	console.log('er got it');
+	winston.error(ex.message, ex);
+});
+winston.add(winston.transports.File, { filename: 'myLogs.log' });
+winston.add(winston.transports.MongoDB, {
+	db: 'mongodb://localhost/DogsNames',
+	level: 'error',
+});
 /* `config.get('dogNames_PrivateKey');` is retrieving the value of the configuration property named
 'dogNames_PrivateKey' from the configuration files. The `config` module allows you to define
 different configurations for different environments, and `config.get()` is used to access the values
@@ -97,6 +101,4 @@ app.listen(PORT, () =>
 	console.log(`Listen to your heart 
 When he's calling for you`)
 );
-
-
 
