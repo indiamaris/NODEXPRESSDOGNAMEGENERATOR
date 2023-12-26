@@ -1,5 +1,5 @@
 /** @format */
-// const winston = require('winston');
+const winston = require('winston');
 const auth = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
@@ -21,48 +21,25 @@ const { names, findByName, nameById } = require('../models/names');
 const { debug } = require('console');
 const { randomBytes } = require('crypto');
 const isAdmin = require('../middleware/isAdmin');
-// const asyncMiddleware = require('../middleware/async');
+
 
 //___________*****_GET__ROUTES_*****___________________//
-/* This code defines a GET route for the '/allNames' endpoint. When a GET request is made to this
-endpoint, it retrieves all the dog names from the database using the `names()` function and sends
-the dog names as the response. */
+
 
 // return all the names in DB
-router.get('/allNames', [auth, isAdmin], async (req, res) => {
-	throw new Error('here is the mesage, darling');
+router.get('/allNames', async (req, res) => {
+	// throw new Error('here is the mesage, darling');
 	const dogNames = await names();
 	res.send(dogNames);
 });
 
-/* This code defines a GET route for the '/randomName' endpoint. When a GET request is made to this
-endpoint, it retrieves a random dog name from the database using the `getRandomItemInArray` function
-and sends the dog name as the response. */
-// create a logger
-// const logger = winston.createLogger({
-// 	level: 'info',
-// 	format: winston.format.json(),
-// 	defaultMeta: { service: 'user-service' },
-// 	transports: [
-// 		//
-// 		// - Write all logs with importance level of `error` or less to `error.log`
-// 		// - Write all logs with importance level of `info` or less to `combined.log`
-// 		//
-// 		new winston.transports.File({ filename: 'error.log', level: 'error' }),
-// 		new winston.transports.File({ filename: 'myLogs.log' }),
-// 	],
-// });
 // return a random name, JUST a name
-router.get('/randomName', async (req, res) => {
+router.get('/randomName', [auth, isAdmin], async (req, res) => {
 	throw new Error();
 	const randomDogName = await getRandomItemInArray(await names());
 	res.send(randomDogName.dogName);
 });
 
-/* This code defines a GET route for the '/randomDog' endpoint. When a GET request is made to this
-endpoint, it retrieves all the dog names from the database using the `names()` function, selects a
-random dog name using the `getRandomItemInArray` function, and sends the random dog name as the
-response. */
 // return complete data for a dog name
 router.get('/randomDog', async (req, res) => {
 	const dogNames = await names();
@@ -70,8 +47,6 @@ router.get('/randomDog', async (req, res) => {
 	res.send(randomDogName);
 });
 
-/* This code defines a GET route for the '/id/:id' endpoint. When a GET request is made to this
-endpoint, it retrieves a dog name from the database based on the provided ID. */
 router.get('/id/:id', [auth, isAdmin], async (req, res) => {
 	const receivedID = req.params.id;
 	const { error } = validateIdFormat(req.params);
@@ -88,8 +63,6 @@ router.get('/id/:id', [auth, isAdmin], async (req, res) => {
 	}
 });
 
-/* This code defines a GET route for the '/name/:dogName' endpoint. When a GET request is made to this
-endpoint, it retrieves a dog name from the database based on the provided dogName parameter. */
 router.get('/name/:dogName', [auth, isAdmin], async (req, res) => {
 	let receivedDogName;
 
@@ -110,10 +83,6 @@ router.get('/name/:dogName', [auth, isAdmin], async (req, res) => {
 
 // ___________*****_POST__ROUTES_*****___________________//
 
-/* This code defines a POST route for the '/allNames' endpoint. When a POST request is made to this
-endpoint, it validates the dog name provided in the request body using the `validateDogName`
-function. If there is an error in the validation, it sends a 400 status code with the error message
-as the response. */
 router.post('/allNames', [auth, isAdmin], async (req, res) => {
 	const { error } = validateDogName(req.body);
 	if (error) return res.status(400).send(error.message);
@@ -125,10 +94,6 @@ router.post('/allNames', [auth, isAdmin], async (req, res) => {
 
 // ___________*****_PATCH__ROUTES_*****___________________//
 
-/* This code defines a PATCH route for updating a dog name in the database. When a PATCH request is
-made to the '/updateName/:id' endpoint, it first validates the ID format and the dog name provided
-in the request. If there is an error in the validation, it sends a 400 status code with the error
-message as the response. */
 router.patch(
 	'/updateName/:id',
 	[auth, isAdmin],
@@ -154,10 +119,6 @@ router.patch(
 	}
 );
 
-/* This code defines a PATCH route for updating a dog name in the database. When a PATCH request is
-made to the '/updateId/:dogName' endpoint, it first validates the dog name provided in the request
-parameter using the `validateDogName` function. If there is an error in the validation, it sends a
-400 status code with the error message as the response. */
 router.patch('/updateId/:dogName', [auth, isAdmin], async (req, res) => {
 	const { error } = validateDogName(req.params);
 	if (error) {
@@ -182,10 +143,7 @@ router.patch('/updateId/:dogName', [auth, isAdmin], async (req, res) => {
 });
 
 // ___________*****_DELETE__ROUTES_*****___________________//
-/* This code defines a DELETE route for deleting a dog name from the database based on the provided ID.
-When a DELETE request is made to the '/id/:id' endpoint, it first validates the ID format using the
-`validateIdFormat` function. If there is an error in the validation, it sends a 400 status code with
-the error message as the response. */
+
 router.delete('/id/:id', [auth, isAdmin], async (req, res) => {
 	const { error } = validateIdFormat(req.params);
 	if (error) {
@@ -210,13 +168,6 @@ router.delete('/id/:id', [auth, isAdmin], async (req, res) => {
 	);
 });
 
-/* This code defines a DELETE route for deleting multiple dog names from the database based on the
-provided dog name. When a DELETE request is made to the '/deleteManyByName/:dogName' endpoint, it
-first retrieves the dog names from the database using the `findByName` function. If there are no dog
-names found with the provided name, it sends a response indicating that the name does not exist in
-the database. If there are dog names found, it uses the `deleteMany` function to delete all the dog
-names with the provided name from the database. It then sends a response indicating the number of
-dog names deleted and a message acknowledging the deletion. */
 router.delete(
 	'/deleteManyByName/:dogName',
 	[auth, isAdmin],

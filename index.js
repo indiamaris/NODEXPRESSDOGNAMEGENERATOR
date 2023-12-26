@@ -6,12 +6,6 @@
  */
 require('express-async-errors');
 const express = require('express');
-const config = require('config');
-const privateKey = config.get('jwtPrivateKey');
-if (!privateKey) {
-	console.error('FATAL ERRORI');
-	process.exit(1);
-}
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
@@ -21,14 +15,15 @@ app.use((req, res, next) => {
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 	next();
 });
+require('./startup/config')();
 require('./startup/routes')(app);
 require('./startup/db')();
 
 //wintons tretas
 const winston = require('winston');
-winston.add(winston.transports.File, { filename: 'myVeryLogs' });
+winston.add(winston.transports.File, { filename: 'myLogs.log' });
+
 app.listen(PORT, () =>
-	console.log(`Listen to your heart 
-When he's calling for you`)
+	winston.info(`Listen on port ${PORT}`)
 );
 

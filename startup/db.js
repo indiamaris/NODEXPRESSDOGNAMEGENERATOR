@@ -5,9 +5,10 @@ module.exports = function () {
 	async function main() {
 		await moongose
 			.connect('mongodb://localhost/DogsNames ')
-			.then(() => console.log('conectedissimo'));
+			.then(() => winston.info(`Conected to MongoDB`));
 	}
 	main().catch((err) => {
-		console.error('Not conected', err);
-	})
-}
+		console.error(winston)(`Not conected to MongoDB`);
+	});
+};
+
