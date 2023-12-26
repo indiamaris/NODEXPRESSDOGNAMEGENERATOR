@@ -23,7 +23,7 @@ require('./startup/db')();
 const winston = require('winston');
 winston.add(winston.transports.File, { filename: 'myLogs.log' });
 
-app.listen(PORT, () =>
-	winston.info(`Listen on port ${PORT}`)
-);
+app.listen(PORT, () => {
+	winston.info(`Listen on port ${PORT}`);
+});
 
