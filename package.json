@@ -11,10 +11,15 @@
 		"moongose": "^1.0.0",
 		"node": "^21.1.0",
 		"nodemon": "^3.0.1",
-		"winston": "^2.4.0"
+		"winston": "^2.4.0",
+		"winston-mongodb": "^4.0.0-rc1"
 	},
 	"scripts": {
 		"build": "npm start",
-		"start": "node index.js"
+		"start": "node index.js",
+		"test": "jest --watchAll --verbose"
+	},
+	"devDependencies": {
+		"jest": "^29.7.0"
 	}
 }
