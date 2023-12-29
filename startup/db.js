@@ -1,14 +1,16 @@
 /** @format */
-const winston = require('winston');
+// const winston = require('winston');
 const moongose = require('mongoose');
+const config = require('config')
 module.exports = function () {
+	const db = config.get('db')
 	async function main() {
 		await moongose
-			.connect('mongodb://localhost/DogsNames ')
-			.then(() => winston.info(`Conected to MongoDB`));
+			.connect(db)
+			.then(() => console.info(`Conected to ${db}`));
 	}
 	main().catch((err) => {
-		console.error(winston)(`Not conected to MongoDB`);
+		console.error(console)(`Not conected to MongoDB`);
 	});
 };
 

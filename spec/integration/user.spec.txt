@@ -1,0 +1,23 @@
+/** @format */
+/** @format */
+
+const request = require('supertest');
+// const { validateUser, User}=require('../../models/user')
+// let server;
+// describe('api/allNames', () => {
+// 	beforeEach(() => {
+// 		server = require('../../index');
+// 	});
+// 	afterEach(() => {
+// 		server.close();
+// 	});
+// 	describe('GET/api/allNames', () => {
+// 		it('return all dognames', async () => {
+// 			const res = await request(server).get('/api/allNames');
+// 			expect(res.status).toBe(200);
+// 		});
+// 	});
+// });
+
+// validateUser;
+

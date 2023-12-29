@@ -13,55 +13,61 @@ const {
 	validateId,
 	validateDogName,
 	validateIdFormat,
-	DogName,
-} = require('../models/names');
+} = require('../validations/validationsID');
+const { DogName } = require('../models/dogName');
 
-const { names, findByName, nameById } = require('../models/names');
+const {
+	findDogNames,
+	findIdByDogName,
+	FindDogNameById,
+} = require('../models/dogName');
 
 const { debug } = require('console');
 const { randomBytes } = require('crypto');
 const isAdmin = require('../middleware/isAdmin');
 
-
 //___________*****_GET__ROUTES_*****___________________//
 
-
-// return all the names in DB
-router.get('/allNames', async (req, res) => {
-	// throw new Error('here is the mesage, darling');
-	const dogNames = await names();
+	// return all dognames if user is logged.
+router.get('/allNames', auth, async (req, res) => {
+	const dogNames = await findDogNames();
 	res.send(dogNames);
 });
 
 // return a random name, JUST a name
 router.get('/randomName', [auth, isAdmin], async (req, res) => {
-	throw new Error();
-	const randomDogName = await getRandomItemInArray(await names());
+	const randomDogName = await getRandomItemInArray(await findDogNames());
 	res.send(randomDogName.dogName);
 });
 
 // return complete data for a dog name
 router.get('/randomDog', async (req, res) => {
-	const dogNames = await names();
+	const dogNames = await findDogNames();
 	const randomDogName = await getRandomItemInArray(dogNames);
 	res.send(randomDogName);
 });
 
-router.get('/id/:id', [auth, isAdmin], async (req, res) => {
-	const receivedID = req.params.id;
-	const { error } = validateIdFormat(req.params);
-	if (error) return res.status(400).send(error.message);
-	else {
-		if (!validateId(receivedID)) {
-			return res.status(400).send('The id isnt valid');
+router.get(
+	'/id/:id',
+	[ auth],
+	async (req, res) => {
+		const receivedID = req.params.id;
+		const { error } = validateIdFormat(req.params);
+		if (error) return res.status(400).send(error.message);
+		else {
+			if (!validateId(receivedID)) {
+				return res.status(400).send('The id isnt valid');
+			}
+			const dogName = await FindDogNameById(receivedID);
+			if (!dogName) {
+				return res
+					.status(404)
+					.send('The id do not exist in our databse');
+			}
+			res.send(dogName);
 		}
-		const dogName = await nameById(receivedID);
-		if (!dogName) {
-			return res.status(404).send('The id do not exist in our databse');
-		}
-		res.send(dogName);
 	}
-});
+);
 
 router.get('/name/:dogName', [auth, isAdmin], async (req, res) => {
 	let receivedDogName;
@@ -72,7 +78,7 @@ router.get('/name/:dogName', [auth, isAdmin], async (req, res) => {
 	}
 	receivedDogName = req.params.dogName;
 
-	const dogName = await findByName(receivedDogName);
+	const dogName = await findIdByDogName(receivedDogName);
 	if (!dogName || dogName.length === 0) {
 		return res
 			.status(404)
@@ -125,7 +131,7 @@ router.patch('/updateId/:dogName', [auth, isAdmin], async (req, res) => {
 		return res.status(400).send(error.message);
 	}
 	const receivedDogName = req.params.dogName;
-	const dogNameToBeUpdated = await findByName(receivedDogName);
+	const dogNameToBeUpdated = await findIdByDogName(receivedDogName);
 	if (dogNameToBeUpdated.length === 0) {
 		return res.send(
 			`The name ${receivedDogName} do not exist in the namesbase`
@@ -173,7 +179,7 @@ router.delete(
 	[auth, isAdmin],
 	async (req, res) => {
 		const toBeDeleted = req.params.dogName;
-		const dogName = await findByName(toBeDeleted);
+		const dogName = await findIdByDogName(toBeDeleted);
 		if (dogName.length === 0) {
 			return res.send(
 				`The name ${toBeDeleted} do not exist in the namesbase`
@@ -194,4 +200,6 @@ router.delete(
 );
 
 module.exports = router;
+
+
 

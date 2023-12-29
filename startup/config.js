@@ -1,8 +1,8 @@
 /** @format */
 
-const config = require('config');
+const configi = require('config');
 module.exports = function () {
-	const privateKey = config.get('jwtPrivateKey');
+	const privateKey = configi.get('jwtPrivateKey');
 	if (!privateKey) {
 		throw new Error('FATAL ERROR: private key not defined');
 		// process.exit(1);

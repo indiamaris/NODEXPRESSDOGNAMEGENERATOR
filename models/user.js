@@ -81,6 +81,5 @@ const validateUser = (user) => {
 	return schemaUser.validate(user);
 };
 exports.User = User;
-
 exports.validateUser = validateUser;
 

@@ -1,7 +1,9 @@
 {
 	"dependencies": {
 		"bcrypt": "^5.1.1",
+		"cjs": "^0.0.11",
 		"config": "^3.3.9",
+		"dotenv": "^16.3.1",
 		"express": "^4.18.2",
 		"express-async-errors": "^3.1.1",
 		"joi": "^17.11.0",
@@ -9,14 +11,14 @@
 		"lodash": "^4.17.21",
 		"mongoose": "^8.0.1",
 		"moongose": "^1.0.0",
-		"node": "^21.1.0",
+		"node": "^21.2.0",
 		"nodemon": "^3.0.1",
-		"winston": "^2.4.0",
+		"supertest": "^3.0.0",
 		"winston-mongodb": "^4.0.0-rc1"
 	},
 	"scripts": {
 		"build": "npm start",
-		"start": "node index.js",
+		"start": "set NODE_ENV=development&& nodemon index.js",
 		"test": "jest --watchAll --verbose"
 	},
 	"devDependencies": {

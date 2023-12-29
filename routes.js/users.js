@@ -4,10 +4,9 @@ const auth = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-
+const mongoose = require('mongoose');
 router.get('/me', auth, async (req, res) => {
-	const user = await User.findById(req.body.id).select(-password);
-	console.log(user)
+	const user = await User.findById(req.User._id).select('-password');
 	res.send(user);
 });
 
@@ -30,7 +29,7 @@ router.post('/', async (req, res) => {
 			userName: req.body.userName,
 			email: req.body.email,
 			password: req.body.password,
-			isAdmin:'false'
+			isAdmin: 'false',
 		});
 		const salt = await bcrypt.genSalt(10);
 		user.password = await bcrypt.hash(user.password, salt);
@@ -45,5 +44,4 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
-
 
