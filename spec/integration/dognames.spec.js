@@ -4,8 +4,11 @@ const { DogName } = require('../../models/dogName');
 const { User } = require('../../models/user');
 let server;
 describe('api/allNames', () => {
+	
 	beforeEach(() => {
+			
 		server = require('../../index');
+		
 	});
 	afterEach(async () => {
 		server.close();
@@ -25,10 +28,8 @@ describe('api/allNames', () => {
 				{ dogName: 'Afranio' },
 				{ dogName: 'Frederica' },
 			]);
-			const routeas = '/api/allNames';
-			const res = await getServerRequest('get', routeas);
-			console.log(routeas);
-			console.log(res.status);
+		
+			const res = await getServerRequest('get', '/api/allNames');
 			expect(res.status).toBe(200);
 			expect(res.body.length).toBe(2);
 			expect(
@@ -71,4 +72,5 @@ describe('api/allNames', () => {
 		});
 	});
 });
+
 
