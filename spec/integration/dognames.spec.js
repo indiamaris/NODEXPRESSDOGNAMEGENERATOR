@@ -4,11 +4,8 @@ const { DogName } = require('../../models/dogName');
 const { User } = require('../../models/user');
 let server;
 describe('api/allNames', () => {
-	
 	beforeEach(() => {
-			
 		server = require('../../index');
-		
 	});
 	afterEach(async () => {
 		server.close();
@@ -28,8 +25,8 @@ describe('api/allNames', () => {
 				{ dogName: 'Afranio' },
 				{ dogName: 'Frederica' },
 			]);
-		
-			const res = await getServerRequest('get', '/api/allNames');
+			const endPoint = '/api/allNames';
+			const res = await getServerRequest('get', endPoint);
 			expect(res.status).toBe(200);
 			expect(res.body.length).toBe(2);
 			expect(
@@ -42,19 +39,15 @@ describe('api/allNames', () => {
 	// 2- return a 401 -bad request status- if id is invalid
 	describe('GET /:id', () => {
 		it('should return a 401 -bad request status- if id is invalid', async () => {
-			const routa = '/api/id/:null';
-			const res = await getServerRequest('get', routa);
+			const endPoint = '/api/id/:null';
+			const res = await getServerRequest('get', endPoint);
 			expect(res.status).toBe(400);
 		});
-
 		it('should return a dogName if id is valid', async () => {
-
 			const dogName = new DogName({ dogName: 'Gilbertina' });
 			await dogName.save();
-			const routas = '/api/id/' + dogName._id;
-			console.log(routas)
-			const res = await getServerRequest('get', routas);
-			console.log(res)
+			const endPoint = '/api/id/' + dogName._id;
+			const res = await getServerRequest('get', endPoint);
 			const teste = res.status;
 			expect(teste).toBe(200);
 			expect(res.body).toHaveProperty('dogName', dogName.dogName);
@@ -64,13 +57,11 @@ describe('api/allNames', () => {
 	// 3- return a 401 if user isn't logged in.
 	describe('GET / ', () => {
 		it('should return a 401 if client is not logged in', async () => {
-			token = 'x';
-			const name = { name: 'lalala' };
+			token = 'invalid Token For Test';
+			const name = { name: 'testName' };
 			const res = await getServerRequest('get', '/api/allNames', name);
-
 			expect(res.status).toBe(400);
 		});
 	});
 });
-
 

@@ -26,7 +26,7 @@ startUpRoutes(app);
 startUpDB();
 
 const server = app.listen(PORT, () => {
-	console.info(`Listen on port ${PORT}`);
+	console.log(`Listen on port ${PORT}`);
 });
 module.exports = server;
 

@@ -3,11 +3,7 @@
 const { User } = require('../../models/user');
 const request = require('supertest');
 describe('auth-middleware', () => {
-
-	beforeEach(() => {
-		server = require('../../index');
-	});
-	beforeEach(() => {
+	beforeEach(async () => {
 		server = require('../../index');
 	});
 
@@ -29,7 +25,4 @@ describe('auth-middleware', () => {
 	// 	expect(res.status).toBe(200);
 	// });
 });
-
-
-
 
