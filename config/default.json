@@ -1,9 +1,5 @@
 {
 	"jwtPrivateKey": "",
-	"db": "dogNames_DB"
+	"db": "//indiamaris:Indiamaris@123@indiamaris.ji46m1d.mongodb.net/?retryWrites=true&w=majority"
 }
-
-
-
-
 
