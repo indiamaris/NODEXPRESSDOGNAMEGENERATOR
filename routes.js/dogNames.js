@@ -11,9 +11,9 @@ const {
 } = require('../utils-gets-functions/getIts');
 const {
 	validateId,
-	validateDogName,
 	validateIdFormat,
 } = require('../validations/validationsID');
+const validateDogName = require('../validations/validateDogName');
 const { DogName } = require('../models/dogName');
 
 const {
@@ -28,7 +28,7 @@ const isAdmin = require('../middleware/isAdmin');
 
 //___________*****_GET__ROUTES_*****___________________//
 
-	// return all dognames if user is logged.
+// return all dognames if user is logged.
 router.get('/allNames', auth, async (req, res) => {
 	const dogNames = await findDogNames();
 	res.send(dogNames);
@@ -47,27 +47,21 @@ router.get('/randomDog', async (req, res) => {
 	res.send(randomDogName);
 });
 
-router.get(
-	'/id/:id',
-	[ auth],
-	async (req, res) => {
-		const receivedID = req.params.id;
-		const { error } = validateIdFormat(req.params);
-		if (error) return res.status(400).send(error.message);
-		else {
-			if (!validateId(receivedID)) {
-				return res.status(400).send('The id isnt valid');
-			}
-			const dogName = await FindDogNameById(receivedID);
-			if (!dogName) {
-				return res
-					.status(404)
-					.send('The id do not exist in our databse');
-			}
-			res.send(dogName);
+router.get('/id/:id', [auth], async (req, res) => {
+	const receivedID = req.params.id;
+	const { error } = validateIdFormat(req.params);
+	if (error) return res.status(400).send(error.message);
+	else {
+		if (!validateId(receivedID)) {
+			return res.status(400).send('The id isnt valid');
 		}
+		const dogName = await FindDogNameById(receivedID);
+		if (!dogName) {
+			return res.status(404).send('The id do not exist in our databse');
+		}
+		res.send(dogName);
 	}
-);
+});
 
 router.get('/name/:dogName', [auth, isAdmin], async (req, res) => {
 	let receivedDogName;
@@ -89,14 +83,25 @@ router.get('/name/:dogName', [auth, isAdmin], async (req, res) => {
 
 // ___________*****_POST__ROUTES_*****___________________//
 
-router.post('/allNames', [auth, isAdmin], async (req, res) => {
-	const { error } = validateDogName(req.body);
-	if (error) return res.status(400).send(error.message);
-	const dogName = new DogName({ dogName: req.body.dogName });
-	await dogName.save();
-	console.debug(dogName);
-	res.send(dogName);
-});
+router.post(
+	'/allNames',
+	[
+		auth,
+		// isAdmin
+	],
+	async (req, res) => {
+		const { error } = validateDogName(req.body);
+
+		if (error) {
+			return res.status(400).send(error.message);
+		}
+
+		const dogName = new DogName({ dogName: req.body.dogName });
+		await dogName.save();
+		console.debug(dogName);
+		res.send(dogName);
+	}
+);
 
 // ___________*****_PATCH__ROUTES_*****___________________//
 
@@ -200,6 +205,4 @@ router.delete(
 );
 
 module.exports = router;
-
-
 

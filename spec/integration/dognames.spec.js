@@ -2,20 +2,32 @@
 const request = require('supertest');
 const { DogName } = require('../../models/dogName');
 const { User } = require('../../models/user');
+const { array } = require('joi');
 let server;
 describe('api/allNames', () => {
-	beforeEach(() => {
-		server = require('../../index');
-	});
+	const closeServer = (server) => {
+		jest.useRealTimers();
+		return new Promise((resolve) => {
+			server.close((err) => {
+				resolve();
+			});
+		});
+	};
+	beforeEach(() => (server = require('../../index')));
+
 	afterEach(async () => {
-		server.close();
+		jest.setTimeout(100000);
+		await closeServer(server);
+
 		await DogName.deleteMany({});
 	});
-	let token = new User().generateAuthToken();
-	const getServerRequest = async (toMethod, toRoute, toSend) => {
+
+	// como eu demarco que um parametro eh opcional?
+	const getServerRequest = async (toMethod, toRoute, toSend, Token) => {
+		var token = new User().generateAuthToken();
 		return await request(server)
 			[toMethod](toRoute)
-			.set('x-auth-token', token)
+			.set('x-auth-token', Token || token)
 			.send(toSend);
 	};
 	// 1- return all dog names if user is logged
@@ -59,7 +71,12 @@ describe('api/allNames', () => {
 		it('should return a 401 if client is not logged in', async () => {
 			token = 'invalid Token For Test';
 			const name = { name: 'testName' };
-			const res = await getServerRequest('get', '/api/allNames', name);
+			const res = await getServerRequest(
+				'get',
+				'/api/allNames',
+				name,
+				token
+			);
 			expect(res.status).toBe(400);
 		});
 	});
