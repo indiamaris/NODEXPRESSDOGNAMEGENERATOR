@@ -5,7 +5,7 @@ const request = require('supertest');
 let server;
 describe('auth-middleware', () => {
 	const closeServer = (server) => {
-		jest.useRealTimers();
+		// jest.useRealTimers();
 		return new Promise((resolve) => {
 			server.close((err) => {
 				resolve();
@@ -18,7 +18,7 @@ describe('auth-middleware', () => {
 	});
 
 	afterEach(async () => {
-		jest.setTimeout(100000);
+		// jest.setTimeout(100000);
 		await closeServer(server);
 		await DogName.deleteMany({});
 	});

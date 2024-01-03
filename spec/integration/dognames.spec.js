@@ -6,7 +6,7 @@ const { array } = require('joi');
 let server;
 describe('api/allNames', () => {
 	const closeServer = (server) => {
-		jest.useRealTimers();
+		// jest.useRealTimers();
 		return new Promise((resolve) => {
 			server.close((err) => {
 				resolve();
@@ -16,7 +16,7 @@ describe('api/allNames', () => {
 	beforeEach(() => (server = require('../../index')));
 
 	afterEach(async () => {
-		jest.setTimeout(100000);
+		// jest.setTimeout(100000);
 		await closeServer(server);
 
 		await DogName.deleteMany({});

@@ -1,12 +1,18 @@
 {
+	"name": "Dog Names Generator",
+	"version": "1.2",
+	"autor": "MEd. Indiamaris",
+	"main": "index.js",
 	"dependencies": {
 		"bcrypt": "^5.1.1",
 		"brew": "^0.0.8",
 		"cjs": "^0.0.11",
+		"compression": "^1.7.4",
 		"config": "^3.3.9",
 		"dotenv": "^16.3.1",
 		"express": "^4.18.2",
 		"express-async-errors": "^3.1.1",
+		"helmet": "^7.1.0",
 		"joi": "^17.11.0",
 		"jsonwebtoken": "^9.0.2",
 		"lodash": "^4.17.21",
@@ -19,10 +25,14 @@
 	},
 	"scripts": {
 		"build": "npm start",
-		"start": "set NODE_ENV=development&& nodemon index.js",
-		"test": "jest --watchAll --verbose"
+		"start": "node index.js",
+		"test": "jest --watchAll --verbose --detectOpenHandles --coverage"
 	},
 	"devDependencies": {
 		"jest": "^29.7.0"
+	},
+	"engines": {
+		"node": "v18.18.0"
 	}
 }
+
