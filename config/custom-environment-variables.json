@@ -1,3 +1,5 @@
 {
 	"jwtPrivateKey": "dogNames_jwtPrivateKey"
+	,
+	"db": "dogNames_DB"
 }

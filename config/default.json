@@ -1,5 +1,9 @@
 {
 	"jwtPrivateKey": "",
-	"db": "mongodb://localhost/DogsNames"
+	"db": "dogNames_DB"
 }
+
+
+
+
 
