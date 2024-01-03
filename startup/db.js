@@ -10,7 +10,7 @@ module.exports = function () {
 			.then(() => console.info(`Conected to ${db}`));
 	}
 	main().catch((err) => {
-		console.error(`Not conected to MongoDB`);
+		console.error(err);
 	});
 };
 
