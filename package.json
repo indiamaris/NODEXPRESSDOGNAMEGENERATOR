@@ -22,12 +22,12 @@
 		"nodemon": "^3.0.1",
 		"supertest": "^3.0.0",
 		"winston-mongodb": "^4.0.0-rc1",
-		"build": "ng build"
+
 	},
 	"scripts": {
 		"version": "node --version",
 		"start": "node index.js",
-		"build": "ng build",
+		"build": "npm run build",
 		"test": "jest --watchAll --verbose --detectOpenHandles --coverage"
 	},
 	"devDependencies": {
