@@ -21,7 +21,8 @@
 		"node": "18.18",
 		"nodemon": "^3.0.1",
 		"supertest": "^3.0.0",
-		"winston-mongodb": "^4.0.0-rc1"
+		"winston-mongodb": "^4.0.0-rc1",
+		"build": "node index.js"
 	},
 	"scripts": {
 		"version": "node --version",
