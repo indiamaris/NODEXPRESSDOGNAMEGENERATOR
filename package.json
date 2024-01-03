@@ -25,7 +25,6 @@
 	},
 	"scripts": {
 		"version": "node --version",
-		"build": "npm start",
 		"start": "node index.js",
 		"test": "jest --watchAll --verbose --detectOpenHandles --coverage"
 	},
@@ -36,3 +35,4 @@
 		"node": "v18.18.0"
 	}
 }
+
