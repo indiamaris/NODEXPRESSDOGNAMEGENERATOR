@@ -108,7 +108,7 @@ router.post(
 router.patch(
 	'/updateName/:id',
 	[auth, isAdmin],
-	[auth, isAdmin],
+
 	async (req, res) => {
 		const { error } = validateIdFormat(req.params);
 		if (error) {
@@ -149,7 +149,6 @@ router.patch('/updateId/:dogName', [auth, isAdmin], async (req, res) => {
 	);
 	const dogUpdated = new DogName({ dogName: req.params.dogName });
 	await dogUpdated.save();
-	console.debug(dogUpdated);
 	res.send(` The new id for ${dogUpdated.dogName} now is 	 ${dogUpdated.id}`);
 });
 

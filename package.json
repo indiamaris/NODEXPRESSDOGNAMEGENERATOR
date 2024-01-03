@@ -1,7 +1,7 @@
 {
-	"name": "Dog Names Generator",
+	"name": "dog-names-generator",
 	"version": "1.2",
-	"autor": "MEd. Indiamaris",
+	"author": "MEd. Indiamaris",
 	"main": "index.js",
 	"dependencies": {
 		"bcrypt": "^5.1.1",
