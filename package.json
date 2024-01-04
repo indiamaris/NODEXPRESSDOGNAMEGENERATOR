@@ -26,7 +26,6 @@
 	"scripts": {
 		"version": "node --version",
 		"start": "node index.js",
-		"build": "npm run build",
 		"test": "jest --watchAll --verbose --detectOpenHandles --coverage"
 	},
 	"devDependencies": {
